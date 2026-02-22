@@ -22,6 +22,7 @@ import { toast } from 'sonner'
 export default function InventoryPage() {
     const [products, setProducts] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [uploadingImage, setUploadingImage] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingProduct, setEditingProduct] = useState<any>(null)
@@ -98,6 +99,33 @@ export default function InventoryPage() {
             })
         }
         setIsFormOpen(true)
+    }
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setUploadingImage(true)
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+            const res = await fetch('/api/admin/upload', {
+                method: 'POST',
+                body: formData
+            })
+            const data = await res.json()
+            if (data.success) {
+                setFormData((prev: any) => ({ ...prev, image: data.url }))
+                toast.success('Image uploaded successfully')
+            } else {
+                toast.error(data.error || 'Failed to upload image')
+            }
+        } catch (error) {
+            toast.error('Error uploading image.')
+        } finally {
+            setUploadingImage(false)
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -442,14 +470,24 @@ export default function InventoryPage() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Image URL</label>
-                                    <input
-                                        required
-                                        value={formData.image}
-                                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                        className="w-full px-6 py-4 rounded-none border border-foreground/10 focus:outline-none focus:border-black text-[11px] font-medium"
-                                        placeholder="https://example.com/product.png"
-                                    />
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Product Image</label>
+                                    <div className="flex gap-4 items-center">
+                                        <div className="flex-1">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                disabled={uploadingImage}
+                                                className="w-full px-6 py-4 rounded-none border border-foreground/10 focus:outline-none focus:border-black text-[11px] font-medium file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:text-[10px] file:font-black file:bg-black file:text-white hover:file:bg-primary file:cursor-pointer transition-all"
+                                            />
+                                        </div>
+                                        {uploadingImage && <Loader2 className="h-5 w-5 animate-spin text-primary flex-shrink-0" />}
+                                    </div>
+                                    {formData.image && !uploadingImage && (
+                                        <div className="mt-2 text-[10px] text-emerald-600 font-bold uppercase truncate">
+                                            ✓ Image URL: {formData.image}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <button type="submit" className="w-full py-5 bg-black text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-primary transition-all shadow-2xl">
