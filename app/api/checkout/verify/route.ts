@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
+import { sendOrderUpdateEmail } from '@/lib/email-service';
 
 const RAZORPAY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 
@@ -34,6 +35,9 @@ export async function POST(req: NextRequest) {
             order.status = 'processing';
             await order.save();
 
+            // Populate user for email
+            await order.populate('user', 'email');
+
             // Decrement Stock only after payment success
             for (const item of order.items) {
                 const product = await Product.findById(item.product);
@@ -46,9 +50,20 @@ export async function POST(req: NextRequest) {
                 }
             }
 
+            // Send confirmation email with invoice link
+            if (order.user && (order.user as any).email) {
+                const email = (order.user as any).email;
+                // Construct relative invoice URL for now, or use absolute if env base url is available
+                const invoiceUrl = `/api/user/orders/${order._id}/invoice`;
+                // Trigger email without awaiting to keep checkout fast
+                sendOrderUpdateEmail(email, order._id.toString(), 'confirmed', invoiceUrl).catch(err => {
+                    console.error('Failed to send order confirmation email:', err);
+                });
+            }
+
             return NextResponse.json({
                 success: true,
-                message: 'Payment verified successfully.'
+                message: 'Payment verified and order confirmed successfully.'
             });
 
         } else {
