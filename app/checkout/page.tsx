@@ -29,7 +29,7 @@ function CheckoutContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { user } = useAuth()
-    const { formatPrice } = useCurrency()
+    const { formatPrice, currency } = useCurrency()
 
     const isBuyNow = searchParams.get('type') === 'buy_now'
     const productId = searchParams.get('productId')
@@ -170,7 +170,8 @@ function CheckoutContent() {
                     phone: form.phone
                 },
                 paymentMethod,
-                saveAddress: form.saveAddress
+                saveAddress: form.saveAddress,
+                currency
             }
 
             const res = await fetch('/api/checkout', {
@@ -188,11 +189,10 @@ function CheckoutContent() {
                     return;
                 }
 
-                // Initialize Razorpay
                 const options = {
                     key: data.key,
                     amount: data.amount,
-                    currency: "INR",
+                    currency: data.currency || currency,
                     name: "Satyavij Healthcare",
                     description: "Clinical Equipment Purchase",
                     order_id: data.razorpayOrderId,

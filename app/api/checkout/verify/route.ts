@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/models/Order';
+import Product from '@/models/Product';
 
 const RAZORPAY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 
@@ -32,6 +33,18 @@ export async function POST(req: NextRequest) {
             order.paymentStatus = 'paid';
             order.status = 'processing';
             await order.save();
+
+            // Decrement Stock only after payment success
+            for (const item of order.items) {
+                const product = await Product.findById(item.product);
+                if (product) {
+                    product.stockCount = Math.max(0, product.stockCount - item.quantity);
+                    if (product.stockCount === 0) {
+                        product.inStock = false;
+                    }
+                    await product.save();
+                }
+            }
 
             return NextResponse.json({
                 success: true,

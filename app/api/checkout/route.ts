@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
         }
 
-        const { productId, quantity, type, shippingAddress, paymentMethod, saveAddress } = await req.json(); // type: 'buy_now' or 'cart_checkout'
+        const { productId, quantity, type, shippingAddress, paymentMethod, saveAddress, currency } = await req.json(); // type: 'buy_now' or 'cart_checkout'
 
         const user = await User.findById(userId).populate('cart.product');
         if (!user) return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
@@ -54,10 +54,7 @@ export async function POST(req: NextRequest) {
             });
             totalAmount = product.price * quantity;
 
-            // Decrement stock
-            product.stockCount -= quantity;
-            if (product.stockCount === 0) product.inStock = false;
-            await product.save();
+            totalAmount = product.price * quantity;
         } else {
             // Cart checkout
             if (user.cart.length === 0) {
@@ -80,10 +77,7 @@ export async function POST(req: NextRequest) {
                 });
                 totalAmount += product.price * item.quantity;
 
-                // Decrement stock
-                product.stockCount -= item.quantity;
-                if (product.stockCount === 0) product.inStock = false;
-                await product.save();
+                totalAmount += product.price * item.quantity;
             }
 
             // Clear cart after checkout
@@ -98,10 +92,30 @@ export async function POST(req: NextRequest) {
 
         const safeType = type === 'buy_now' ? 'buy_now' : 'standard';
 
+        const CONVERSION_RATES: Record<string, number> = {
+            INR: 1,
+            USD: 0.012,
+            EUR: 0.011,
+            GBP: 0.0094,
+            JPY: 1.81,
+        };
+
+        const rzpCurrency = currency || 'INR';
+        const rate = CONVERSION_RATES[rzpCurrency] || 1;
+
+        // Convert amounts to target currency
+        const convertedSubtotal = totalAmount * rate;
+        const convertedTax = convertedSubtotal * 0.05;
+        const totalWithTax = convertedSubtotal + convertedTax;
+
+        const multiplier = rzpCurrency === 'JPY' ? 1 : 100;
+        const finalAmount = Math.round(totalWithTax * multiplier);
+
         const order = await Order.create({
             user: userId,
             items: orderItems,
-            totalAmount,
+            totalAmount: Number(totalWithTax.toFixed(2)),
+            currency: rzpCurrency,
             type: safeType,
             status: 'pending', // Pending real payment
             paymentMethod: paymentMethod || 'card',
@@ -121,12 +135,9 @@ export async function POST(req: NextRequest) {
             key_secret: process.env.RAZORPAY_KEY_SECRET || ''
         });
 
-        // Add 5% tax or calculate strictly (assuming totalAmount here is Subtotal. Let's send the final sum)
-        const totalWithTax = totalAmount + (totalAmount * 0.05);
-
         const rzpOrder = await razorpay.orders.create({
-            amount: Math.round(totalWithTax * 100), // amount in the smallest currency unit (paise)
-            currency: "INR",
+            amount: finalAmount,
+            currency: rzpCurrency,
             receipt: `receipt_order_${order._id}`,
             notes: {
                 userId: userId.toString(),
@@ -143,6 +154,7 @@ export async function POST(req: NextRequest) {
             orderId: order._id,
             razorpayOrderId: rzpOrder.id,
             amount: rzpOrder.amount,
+            currency: rzpOrder.currency,
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ''
         });
 
