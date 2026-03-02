@@ -435,7 +435,6 @@ function CheckoutContent() {
                             <div className="space-y-4">
                                 {[
                                     { id: 'razorpay', label: 'Razorpay Gateway', desc: 'Secure payment via Cards, UPI, or Netbanking' },
-                                    { id: 'cashfree', label: 'Cashfree Gateway', desc: 'Secure payment via multiple methods' },
                                     { id: 'cod', label: 'Cash on Delivery', desc: 'Pay when your equipment arrives' }
                                 ].map(method => (
                                     <label key={method.id} className={`flex items-start gap-4 p-5 border cursor-pointer transition-all ${paymentMethod === method.id ? 'border-primary bg-primary/5 shadow-sm' : 'border-foreground/10 hover:border-foreground/30'}`}>
