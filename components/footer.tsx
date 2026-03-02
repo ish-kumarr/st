@@ -25,7 +25,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Trusted supplier of premium medical equipment and healthcare solutions for institutions worldwide.
+              Satyavij Healthcare Pvt. Ltd. - Trusted supplier of premium medical equipment and healthcare solutions for institutions worldwide.
             </p>
             <div className="flex gap-3 pt-2">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
@@ -72,23 +72,23 @@ export function Footer() {
             <h4 className="font-semibold text-foreground">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  About Us
+                <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Careers
+                <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">
+                  Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Blog
+                <Link href="/refund-policy" className="text-muted-foreground hover:text-primary transition-colors">
+                  Refund Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  News
+                <Link href="/shipping-policy" className="text-muted-foreground hover:text-primary transition-colors">
+                  Shipping Policy
                 </Link>
               </li>
             </ul>
@@ -100,7 +100,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex gap-2 text-muted-foreground">
                 <Phone className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 98178 82309</span>
               </li>
               <li className="flex gap-2 text-muted-foreground">
                 <Mail className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
@@ -108,7 +108,7 @@ export function Footer() {
               </li>
               <li className="flex gap-2 text-muted-foreground">
                 <MapPin className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
-                <span>123 Medical Plaza, Healthcare City, HC 12345</span>
+                <span>Gali No-1, Devi Lal Colony, Mehalana Road, Sonipat, Haryana – 131001</span>
               </li>
             </ul>
           </div>
@@ -120,14 +120,14 @@ export function Footer() {
             &copy; 2024 Satyavij Medical Equipment. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">
               Terms of Service
             </Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-              Cookie Policy
+            <Link href="/refund-policy" className="text-muted-foreground hover:text-primary transition-colors">
+              Refund Policy
             </Link>
           </div>
         </div>
