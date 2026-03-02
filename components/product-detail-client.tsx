@@ -14,7 +14,7 @@ import {
     CheckCircle2,
     Truck,
     Shield,
-    Phone,
+    Mail,
     ArrowLeft,
     Share2,
     Loader2,
@@ -357,8 +357,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                                 Our specialized engineers are available 24/7 to provide technical support for all your equipment needs.
                                             </p>
                                             <div className="flex items-center gap-4 p-6 border border-foreground/[0.05] bg-foreground/[0.01]">
-                                                <Phone className="h-5 w-5 opacity-40" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">+1 (800) SATYA-VIJ</span>
+                                                <Mail className="h-5 w-5 opacity-40" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">info@satyavij.com</span>
                                             </div>
                                         </div>
                                     </div>

@@ -56,16 +56,7 @@ export default function ContactPage() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-6 group">
-                                <div className="w-12 h-12 bg-black text-white flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
-                                    <Phone className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-2 text-foreground/40">Phone</h3>
-                                    <p className="text-sm font-bold">+91 98178 82309</p>
-                                    <p className="text-[10px] uppercase font-black tracking-widest text-foreground/30 mt-1">Mon - Sat, 9:00 AM - 6:00 PM</p>
-                                </div>
-                            </div>
+
 
                             <div className="flex gap-6 group">
                                 <div className="w-12 h-12 bg-black text-white flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
@@ -83,7 +74,7 @@ export default function ContactPage() {
                             <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
                             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4">Support Hours</h4>
                             <p className="text-xs font-medium text-foreground/60 leading-relaxed italic">
-                                "We understand the critical nature of medical supplies. For emergency institutional orders, please contact our priority hotline."
+                                "We understand the critical nature of medical supplies. For emergency institutional orders, please contact our support team via email or the form below."
                             </p>
                         </div>
                     </div>

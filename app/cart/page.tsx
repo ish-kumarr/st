@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useCurrency } from '@/hooks/use-currency'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, Suspense } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 function CartContent() {
   const searchParams = useSearchParams()
@@ -127,15 +127,76 @@ function CartContent() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {success && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="bg-emerald-500 text-white p-4 text-center text-[10px] font-black uppercase tracking-widest"
-        >
-          Deployment Successful. Your professional equipment order has been confirmed.
-        </motion.div>
-      )}
+      {/* Success Modal */}
+      <AnimatePresence>
+        {success && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white max-w-lg w-full p-12 relative overflow-hidden text-center shadow-2xl"
+            >
+              {/* Animated Background Element */}
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-500" />
+
+              <div className="mb-8 flex justify-center">
+                <motion.div
+                  initial={{ rotate: -20, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ type: "spring", damping: 12, delay: 0.2 }}
+                  className="w-20 h-20 bg-emerald-50 flex items-center justify-center rounded-full"
+                >
+                  <RefreshCw className="h-10 w-10 text-emerald-500 animate-spin-slow" />
+                </motion.div>
+              </div>
+
+              <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">
+                Deployment <br />Confirmed
+              </h2>
+
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-10 px-6">
+                Your professional healthcare equipment has been authorized for dispatch.
+              </p>
+
+              <div className="space-y-3 mb-12">
+                <div className="p-4 border border-foreground/5 bg-foreground/[0.02] flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                  <span className="opacity-40">Status</span>
+                  <span className="text-emerald-500">Processing</span>
+                </div>
+                <div className="p-4 border border-foreground/5 bg-foreground/[0.02] flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                  <span className="opacity-40">Order Type</span>
+                  <span>Clinical Selection</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={() => router.push('/orders')}
+                  className="w-full h-14 bg-black text-white hover:bg-emerald-600 rounded-none font-black uppercase tracking-[0.3em] text-[10px] transition-colors"
+                >
+                  View Procurement Log
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('success');
+                    router.replace(url.pathname);
+                  }}
+                  className="w-full h-14 border-foreground/10 text-foreground/40 hover:text-foreground hover:bg-foreground/5 rounded-none font-black uppercase tracking-widest text-[10px]"
+                >
+                  Close Notification
+                </Button>
+              </div>
+
+              {/* Decorative side element */}
+              <div className="absolute -right-12 -top-12 w-32 h-32 border border-foreground/5 rounded-full" />
+              <div className="absolute -left-6 -bottom-6 w-20 h-20 border border-foreground/5 rounded-full" />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       <Header />
 
       <main className="flex-1 container mx-auto max-w-7xl px-4 py-8">

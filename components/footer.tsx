@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+import { Facebook, Twitter, Linkedin, Mail, MapPin } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -98,10 +98,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">Contact</h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex gap-2 text-muted-foreground">
-                <Phone className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
-                <span>+91 98178 82309</span>
-              </li>
+
               <li className="flex gap-2 text-muted-foreground">
                 <Mail className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
                 <span>info@satyavij.com</span>
