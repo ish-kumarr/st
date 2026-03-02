@@ -15,7 +15,7 @@ const templates = {
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #f0f0f0;">
         <h1 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 24px;">Confirm Your Account</h1>
         <p style="font-size: 16px; line-height: 1.6; color: #666; margin-bottom: 32px;">
-          Welcome to Satyavij. Please use the following code to verify your email address and join our clinical workspace.
+          Welcome to Satyavij. Please use the following code to verify your email address and join our platform.
         </p>
         <div style="background: #fbfbfb; padding: 40px; text-align: center; border: 1px solid #eee;">
           <span style="font-size: 32px; font-weight: 900; letter-spacing: 12px; color: #000;">${otp}</span>
@@ -82,7 +82,7 @@ const templates = {
         </div>
         ` : ''}
         <p style="font-size: 12px; color: #999; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; border-top: 1px solid #eee; padding-top: 24px;">
-          Thank you for shopping with Satyavij Clinical Workspace.
+          Thank you for shopping with Satyavij Healthcare Pvt. Ltd.
         </p>
       </div>
     `,

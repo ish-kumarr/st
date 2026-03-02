@@ -48,6 +48,8 @@ function CheckoutContent() {
 
     const [form, setForm] = useState({
         fullName: '',
+        companyName: '',
+        gstNumber: '',
         addressLine1: '',
         addressLine2: '',
         city: '',
@@ -128,6 +130,8 @@ function CheckoutContent() {
         const addr = addresses[index]
         setForm({
             fullName: addr.fullName,
+            companyName: addr.companyName || '',
+            gstNumber: addr.gstNumber || '',
             addressLine1: addr.addressLine1,
             addressLine2: addr.addressLine2 || '',
             city: addr.city,
@@ -143,7 +147,7 @@ function CheckoutContent() {
         setSelectedAddressIndex(null)
         setIsAddingNewAddress(true)
         setForm({
-            fullName: '', addressLine1: '', addressLine2: '',
+            fullName: '', companyName: '', gstNumber: '', addressLine1: '', addressLine2: '',
             city: '', state: '', postalCode: '', country: '', phone: '', saveAddress: true
         })
     }
@@ -161,6 +165,8 @@ function CheckoutContent() {
                 quantity: isBuyNow ? quantity : undefined,
                 shippingAddress: {
                     fullName: form.fullName,
+                    companyName: form.companyName,
+                    gstNumber: form.gstNumber,
                     addressLine1: form.addressLine1,
                     addressLine2: form.addressLine2,
                     city: form.city,
@@ -189,11 +195,23 @@ function CheckoutContent() {
                     return;
                 }
 
+                if (data.gateway === 'cashfree') {
+                    const cashfree = new (window as any).Cashfree({
+                        mode: "production" // or "sandbox" based on your env
+                    });
+
+                    await cashfree.checkout({
+                        paymentSessionId: data.payment_session_id,
+                        returnUrl: `${window.location.origin}/api/checkout/cashfree-verify?order_id=${data.orderId}`
+                    });
+                    return;
+                }
+
                 const options = {
                     key: data.key,
                     amount: data.amount,
                     currency: data.currency || currency,
-                    name: "Satyavij Healthcare",
+                    name: "Satyavij Healthcare Pvt. Ltd.",
                     description: "Clinical Equipment Purchase",
                     order_id: data.razorpayOrderId,
                     handler: async function (response: any) {
@@ -260,6 +278,7 @@ function CheckoutContent() {
     return (
         <div className="min-h-screen bg-[#fbfbfb] pt-32 pb-24">
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+            <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="lazyOnload" />
             <div className="container mx-auto px-6 max-w-6xl">
 
                 {/* Header */}
@@ -304,6 +323,8 @@ function CheckoutContent() {
                                                 {selectedAddressIndex === idx && <CheckCircle className="w-4 h-4 text-primary" />}
                                             </div>
                                             <p className="text-xs text-foreground/60 leading-relaxed font-medium">
+                                                {addr.companyName && <>{addr.companyName}<br /></>}
+                                                {addr.gstNumber && <>GST: {addr.gstNumber}<br /></>}
                                                 {addr.addressLine1} {addr.addressLine2}<br />
                                                 {addr.city}, {addr.state} {addr.postalCode}<br />
                                                 {addr.country}<br />
@@ -338,6 +359,17 @@ function CheckoutContent() {
                                             <div className="space-y-2">
                                                 <label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Phone Number</label>
                                                 <input required value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full px-5 py-4 border border-foreground/10 focus:border-black focus:outline-none text-xs font-bold transition-colors bg-white/50" placeholder="+1 555-0198" />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Company / Hospital Name (Optional)</label>
+                                                <input value={form.companyName || ''} onChange={e => setForm({ ...form, companyName: e.target.value })} className="w-full px-5 py-4 border border-foreground/10 focus:border-black focus:outline-none text-xs font-bold transition-colors bg-white/50" placeholder="e.g. Apollo Hospitals" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">GST Number (Optional)</label>
+                                                <input value={form.gstNumber || ''} onChange={e => setForm({ ...form, gstNumber: e.target.value })} className="w-full px-5 py-4 border border-foreground/10 focus:border-black focus:outline-none text-xs font-bold transition-colors bg-white/50" placeholder="e.g. 27AADCB2230M1Z2" />
                                             </div>
                                         </div>
 
@@ -403,6 +435,7 @@ function CheckoutContent() {
                             <div className="space-y-4">
                                 {[
                                     { id: 'razorpay', label: 'Razorpay Gateway', desc: 'Secure payment via Cards, UPI, or Netbanking' },
+                                    { id: 'cashfree', label: 'Cashfree Gateway', desc: 'Secure payment via multiple methods' },
                                     { id: 'cod', label: 'Cash on Delivery', desc: 'Pay when your equipment arrives' }
                                 ].map(method => (
                                     <label key={method.id} className={`flex items-start gap-4 p-5 border cursor-pointer transition-all ${paymentMethod === method.id ? 'border-primary bg-primary/5 shadow-sm' : 'border-foreground/10 hover:border-foreground/30'}`}>

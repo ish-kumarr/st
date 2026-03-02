@@ -39,11 +39,16 @@ export async function PUT(req: NextRequest) {
         if (!order) return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
 
         // Send email update to user
-        if (order.user && order.user.email) {
+        if (order.user && (order.user as any).email) {
             // we only really want to send email if status or invoiceUrl was specifically updated
             if (status || invoiceUrl) {
+                let absoluteInvoiceUrl = order.invoiceUrl;
+                if (absoluteInvoiceUrl && absoluteInvoiceUrl.startsWith('/')) {
+                    absoluteInvoiceUrl = `${req.nextUrl.origin}${absoluteInvoiceUrl}`;
+                }
+
                 // don't await so we don't block the response, but catch errors
-                sendOrderUpdateEmail(order.user.email, order._id.toString(), order.status, order.invoiceUrl).catch(console.error);
+                sendOrderUpdateEmail((order.user as any).email, order._id.toString(), order.status, absoluteInvoiceUrl).catch(console.error);
             }
         }
 

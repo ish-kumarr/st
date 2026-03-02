@@ -48,9 +48,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 const logoPath = path.join(process.cwd(), 'public', 'images', 'Logo.png');
                 try {
                     doc.image(logoPath, 50, 45, { width: 60 });
-                    doc.fontSize(24).font('Helvetica-Bold').fillColor('#000000').text('Satyavij', 120, 58);
+                    doc.fontSize(20).font('Helvetica-Bold').fillColor('#000000').text('Satyavij Healthcare Pvt. Ltd.', 120, 48);
+                    doc.fontSize(9).font('Helvetica').fillColor('#555555');
+                    doc.text('Gali No-1, Devi Lal Colony, Mehalana Road,', 120, 68);
+                    doc.text('Sonipat, Haryana - 131001, India', 120, 80);
+                    doc.font('Helvetica-Bold').text('GSTIN: 06ABACS7617K2Z3', 120, 92);
                 } catch (e) {
-                    doc.fontSize(24).font('Helvetica-Bold').fillColor('#000000').text('Satyavij', 50, 50);
+                    doc.fontSize(20).font('Helvetica-Bold').fillColor('#000000').text('Satyavij Healthcare Pvt. Ltd.', 50, 48);
+                    doc.fontSize(9).font('Helvetica').fillColor('#555555');
+                    doc.text('Gali No-1, Devi Lal Colony, Mehalana Road,', 50, 68);
+                    doc.text('Sonipat, Haryana - 131001, India', 50, 80);
+                    doc.font('Helvetica-Bold').text('GSTIN: 06ABACS7617K2Z3', 50, 92);
                 }
 
                 doc.fontSize(20).font('Helvetica-Bold').fillColor('#333333').text('INVOICE', 0, 50, { align: 'right', width: 545 });
@@ -67,6 +75,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 doc.moveDown(0.5);
                 doc.fontSize(10).font('Helvetica').fillColor('#555555');
                 doc.text(order.shippingAddress.fullName, 50, doc.y);
+                if (order.shippingAddress.companyName) doc.text(order.shippingAddress.companyName, 50, doc.y);
+                if (order.shippingAddress.gstNumber) doc.text(`GSTIN: ${order.shippingAddress.gstNumber}`, 50, doc.y);
                 doc.text(order.shippingAddress.addressLine1, 50, doc.y);
                 if (order.shippingAddress.addressLine2) doc.text(order.shippingAddress.addressLine2, 50, doc.y);
                 doc.text(`${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}`, 50, doc.y);
@@ -133,7 +143,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 doc.text(`INR ${finalTotal.toLocaleString()}`, 420, doc.y - 14, { align: 'right', width: 115 });
 
                 doc.moveDown(4);
-                doc.fontSize(10).font('Helvetica').fillColor('grey').text('Thank you for shopping with Satyavij Clinical Workspace.', 50, doc.y, { align: 'center', width: 495 });
+                doc.fontSize(10).font('Helvetica').fillColor('grey').text('Thank you for shopping with Satyavij Healthcare Pvt. Ltd.', 50, doc.y, { align: 'center', width: 495 });
 
                 // Finalize the PDF
                 doc.end();

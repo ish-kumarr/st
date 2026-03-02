@@ -34,6 +34,8 @@ const OrderSchema = new mongoose.Schema({
     },
     shippingAddress: {
         fullName: { type: String, required: true },
+        companyName: { type: String },
+        gstNumber: { type: String },
         addressLine1: { type: String, required: true },
         addressLine2: { type: String },
         city: { type: String, required: true },
@@ -44,7 +46,7 @@ const OrderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['card', 'upi', 'cod', 'razorpay'],
+        enum: ['card', 'upi', 'cod', 'razorpay', 'cashfree'],
         default: 'card'
     },
     paymentStatus: {
@@ -69,6 +71,9 @@ const OrderSchema = new mongoose.Schema({
         type: String,
     },
     razorpayPaymentId: {
+        type: String,
+    },
+    cashfreeOrderId: {
         type: String,
     }
 }, {

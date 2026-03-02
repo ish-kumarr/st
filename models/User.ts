@@ -44,6 +44,8 @@ const UserSchema = new mongoose.Schema({
     cart: [CartItemSchema],
     savedAddresses: [{
         fullName: { type: String, required: true },
+        companyName: { type: String },
+        gstNumber: { type: String },
         addressLine1: { type: String, required: true },
         addressLine2: { type: String },
         city: { type: String, required: true },

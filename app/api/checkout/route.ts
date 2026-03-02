@@ -5,6 +5,16 @@ import User from '@/models/User';
 import Product from '@/models/Product';
 import Order from '@/models/Order';
 import Razorpay from 'razorpay';
+import { Cashfree, CFEnvironment } from 'cashfree-pg';
+
+// Configure Cashfree
+const cashfree = new Cashfree(
+    process.env.CASHFREE_ENV === 'PRODUCTION' ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+    process.env.CASHFREE_CLIENT_ID || '',
+    process.env.CASHFREE_CLIENT_SECRET || ''
+);
+cashfree.XApiVersion = "2023-08-01"; // Using the stable version compatible with most accounts
+
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'clinical_security_fallback';
@@ -127,6 +137,38 @@ export async function POST(req: NextRequest) {
                 success: true,
                 message: 'Order placed via Cash on Delivery',
                 orderId: order._id
+            });
+        }
+
+        if (paymentMethod === 'cashfree') {
+            const request = {
+                order_amount: Number(totalWithTax.toFixed(2)),
+                order_currency: rzpCurrency,
+                order_id: order._id.toString(),
+                customer_details: {
+                    customer_id: userId.toString(),
+                    customer_name: shippingAddress.fullName,
+                    customer_email: user.email,
+                    customer_phone: shippingAddress.phone
+                },
+                order_meta: {
+                    return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/checkout/cashfree-verify?order_id={order_id}`
+                },
+                order_note: "Clinical Equipment Purchase"
+            };
+
+            const response = await cashfree.PGCreateOrder(request);
+            const cfData = response.data;
+
+            order.cashfreeOrderId = cfData.cf_order_id;
+            await order.save();
+
+            return NextResponse.json({
+                success: true,
+                payment_session_id: cfData.payment_session_id,
+                cf_order_id: cfData.cf_order_id,
+                orderId: order._id,
+                gateway: 'cashfree'
             });
         }
 

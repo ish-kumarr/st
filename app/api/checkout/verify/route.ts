@@ -53,8 +53,9 @@ export async function POST(req: NextRequest) {
             // Send confirmation email with invoice link
             if (order.user && (order.user as any).email) {
                 const email = (order.user as any).email;
-                // Construct relative invoice URL for now, or use absolute if env base url is available
-                const invoiceUrl = `/api/user/orders/${order._id}/invoice`;
+                // Construct absolute invoice URL
+                const origin = req.nextUrl.origin;
+                const invoiceUrl = `${origin}/api/user/orders/${order._id}/invoice`;
                 // Trigger email without awaiting to keep checkout fast
                 sendOrderUpdateEmail(email, order._id.toString(), 'confirmed', invoiceUrl).catch(err => {
                     console.error('Failed to send order confirmation email:', err);
