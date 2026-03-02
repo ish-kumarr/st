@@ -278,7 +278,6 @@ function CheckoutContent() {
     return (
         <div className="min-h-screen bg-[#fbfbfb] pt-32 pb-24">
             <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
-            <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="lazyOnload" />
             <div className="container mx-auto px-6 max-w-6xl">
 
                 {/* Header */}

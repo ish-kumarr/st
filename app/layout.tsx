@@ -48,7 +48,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body className="antialiased font-sans selection:bg-primary selection:text-primary-foreground min-h-screen">
+      <body
+        className="antialiased font-sans selection:bg-primary selection:text-primary-foreground min-h-screen"
+        suppressHydrationWarning
+      >
         <AuthProvider>
           <CurrencyProvider>
             {children}
