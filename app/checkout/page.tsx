@@ -487,25 +487,27 @@ function CheckoutContent() {
                                 ))}
                             </div>
 
-                            <div className="space-y-4 pt-6 border-t border-foreground/5">
+                            <div className="space-y-4 pt-4 border-t border-foreground/5">
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
                                     <span className="text-foreground/50">Subtotal</span>
                                     <span>{formatPrice(total)}</span>
                                 </div>
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
-                                    <span className="text-foreground/50">Shipping</span>
-                                    <span className="text-emerald-500">Free</span>
+                                    <span className="text-foreground/50">Shipping (Logistic)</span>
+                                    <span>{formatPrice(100)}</span>
                                 </div>
                                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
-                                    <span className="text-foreground/50">Taxes (Estimated)</span>
-                                    <span>{formatPrice(total * 0.05)}</span>
+                                    <span className="text-foreground/50">GST</span>
+                                    <span>{formatPrice(items.reduce((acc, item) => acc + (item.product.price * item.quantity * (item.product.gstPercentage || 0) / 100), 0))}</span>
                                 </div>
 
                                 <div className="pt-4 border-t border-foreground/5 flex justify-between items-end">
                                     <span className="text-sm font-black uppercase tracking-[0.2em]">Total</span>
                                     <div className="text-right">
-                                        <div className="text-3xl font-black tracking-tighter leading-none">{formatPrice(total + (total * 0.05))}</div>
-                                        <span className="text-[9px] font-medium text-foreground/40 uppercase tracking-widest">Including VAT</span>
+                                        <div className="text-3xl font-black tracking-tighter leading-none">
+                                            {formatPrice(total + 100 + items.reduce((acc, item) => acc + (item.product.price * item.quantity * (item.product.gstPercentage || 0) / 100), 0))}
+                                        </div>
+                                        <span className="text-[9px] font-medium text-foreground/40 uppercase tracking-widest">Including Taxes & Logistic</span>
                                     </div>
                                 </div>
                             </div>

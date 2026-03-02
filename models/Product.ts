@@ -10,6 +10,14 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a category.'],
     },
+    hsnCode: {
+        type: String,
+        default: '',
+    },
+    gstPercentage: {
+        type: Number,
+        default: 0,
+    },
     subcategory: {
         type: String,
     },

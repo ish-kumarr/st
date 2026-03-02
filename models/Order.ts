@@ -14,7 +14,10 @@ const OrderItemSchema = new mongoose.Schema({
     priceAtTime: {
         type: Number,
         required: true
-    }
+    },
+    hsnCode: String,
+    gstPercentage: Number,
+    taxAmount: Number
 });
 
 const OrderSchema = new mongoose.Schema({
@@ -27,6 +30,14 @@ const OrderSchema = new mongoose.Schema({
     totalAmount: {
         type: Number,
         required: true
+    },
+    taxAmount: {
+        type: Number,
+        default: 0
+    },
+    shippingCost: {
+        type: Number,
+        default: 0
     },
     currency: {
         type: String,

@@ -103,6 +103,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
                 doc.fontSize(10).font('Helvetica-Bold').fillColor('#000000');
                 doc.text('ITEM DESCRIPTION', 60, tableY, { continued: false });
+                doc.text('HSN', 280, tableY, { align: 'right', width: 60 });
                 doc.text('QTY', 350, tableY, { align: 'right', width: 50 });
                 doc.text('PRICE', 450, tableY, { align: 'right', width: 85 });
 
@@ -113,10 +114,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 let yPosition = doc.y;
                 for (const item of order.items) {
                     const itemName = item.product?.name || 'Unknown Product';
+                    const hsn = item.hsnCode || '-';
                     const qty = item.quantity.toString();
-                    const priceStr = `INR ${item.priceAtTime.toLocaleString()}`;
+                    const priceStr = `${order.currency} ${item.priceAtTime.toLocaleString()}`;
 
-                    doc.text(itemName, 60, yPosition, { width: 280, continued: false });
+                    doc.text(itemName, 60, yPosition, { width: 220, continued: false });
+                    doc.text(hsn, 280, yPosition, { align: 'right', width: 60 });
                     doc.text(qty, 350, yPosition, { align: 'right', width: 50 });
                     doc.text(priceStr, 450, yPosition, { align: 'right', width: 85 });
                     yPosition = doc.y + 15;
@@ -128,19 +131,27 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
                 // 5. Totals
                 doc.fontSize(10).font('Helvetica-Bold').fillColor('#555555');
+
+                // Calculate subtotal from items if not directly stored, but usually it's order.totalAmount - tax - shipping
+                const itemsSubtotal = order.items.reduce((acc: number, item: any) => acc + (item.priceAtTime * item.quantity), 0);
+
                 doc.text('Subtotal:', 300, doc.y, { continued: false, align: 'right', width: 100 });
-                doc.text(`INR ${order.totalAmount.toLocaleString()}`, 420, doc.y - 12, { align: 'right', width: 115 });
+                doc.text(`${order.currency} ${itemsSubtotal.toLocaleString()}`, 420, doc.y - 12, { align: 'right', width: 115 });
                 doc.moveDown(0.5);
 
-                const tax = order.totalAmount * 0.05;
-                doc.text('Taxes (Estimated 5%):', 300, doc.y, { continued: false, align: 'right', width: 100 });
-                doc.text(`INR ${tax.toLocaleString()}`, 420, doc.y - 12, { align: 'right', width: 115 });
+                if (order.shippingCost) {
+                    doc.text('Shipping:', 300, doc.y, { continued: false, align: 'right', width: 100 });
+                    doc.text(`${order.currency} ${order.shippingCost.toLocaleString()}`, 420, doc.y - 12, { align: 'right', width: 115 });
+                    doc.moveDown(0.5);
+                }
+
+                doc.text('GST:', 300, doc.y, { continued: false, align: 'right', width: 100 });
+                doc.text(`${order.currency} ${(order.taxAmount || 0).toLocaleString()}`, 420, doc.y - 12, { align: 'right', width: 115 });
                 doc.moveDown(1);
 
-                const finalTotal = order.totalAmount + tax;
                 doc.fontSize(12).font('Helvetica-Bold').fillColor('#000000');
                 doc.text('Total Amount:', 300, doc.y, { continued: false, align: 'right', width: 100 });
-                doc.text(`INR ${finalTotal.toLocaleString()}`, 420, doc.y - 14, { align: 'right', width: 115 });
+                doc.text(`${order.currency} ${order.totalAmount.toLocaleString()}`, 420, doc.y - 14, { align: 'right', width: 115 });
 
                 doc.moveDown(4);
                 doc.fontSize(10).font('Helvetica').fillColor('grey').text('Thank you for shopping with Satyavij Healthcare Pvt. Ltd.', 50, doc.y, { align: 'center', width: 495 });

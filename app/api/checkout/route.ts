@@ -60,7 +60,10 @@ export async function POST(req: NextRequest) {
             orderItems.push({
                 product: productId,
                 quantity,
-                priceAtTime: product.price
+                priceAtTime: product.price,
+                hsnCode: product.hsnCode,
+                gstPercentage: product.gstPercentage,
+                taxAmount: (product.price * quantity * (product.gstPercentage || 0) / 100)
             });
             totalAmount = product.price * quantity;
 
@@ -83,7 +86,10 @@ export async function POST(req: NextRequest) {
                 orderItems.push({
                     product: product._id,
                     quantity: item.quantity,
-                    priceAtTime: product.price
+                    priceAtTime: product.price,
+                    hsnCode: product.hsnCode,
+                    gstPercentage: product.gstPercentage,
+                    taxAmount: (product.price * item.quantity * (product.gstPercentage || 0) / 100)
                 });
                 totalAmount += product.price * item.quantity;
 
@@ -113,18 +119,26 @@ export async function POST(req: NextRequest) {
         const rzpCurrency = currency || 'INR';
         const rate = CONVERSION_RATES[rzpCurrency] || 1;
 
+        // Calculate total tax in INR first for consistency
+        const totalTaxINR = orderItems.reduce((acc, item) => acc + (item.taxAmount || 0), 0);
+        const shippingCostINR = 100;
+
         // Convert amounts to target currency
         const convertedSubtotal = totalAmount * rate;
-        const convertedTax = convertedSubtotal * 0.05;
-        const totalWithTax = convertedSubtotal + convertedTax;
+        const convertedTax = totalTaxINR * rate;
+        const convertedShipping = shippingCostINR * rate;
+
+        const totalFinal = convertedSubtotal + convertedTax + convertedShipping;
 
         const multiplier = rzpCurrency === 'JPY' ? 1 : 100;
-        const finalAmount = Math.round(totalWithTax * multiplier);
+        const finalAmount = Math.round(totalFinal * multiplier);
 
         const order = await Order.create({
             user: userId,
             items: orderItems,
-            totalAmount: Number(totalWithTax.toFixed(2)),
+            totalAmount: Number(totalFinal.toFixed(2)),
+            taxAmount: Number(convertedTax.toFixed(2)),
+            shippingCost: Number(convertedShipping.toFixed(2)),
             currency: rzpCurrency,
             type: safeType,
             status: 'pending', // Pending real payment
@@ -142,7 +156,7 @@ export async function POST(req: NextRequest) {
 
         if (paymentMethod === 'cashfree') {
             const request = {
-                order_amount: Number(totalWithTax.toFixed(2)),
+                order_amount: Number(totalFinal.toFixed(2)),
                 order_currency: rzpCurrency,
                 order_id: order._id.toString(),
                 customer_details: {
