@@ -185,7 +185,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                     {product.stockCount > 0 ? (
                                         <>
                                             <CheckCircle2 className="h-3.5 w-3.5" />
-                                            In Stock ({product.stockCount} Units)
+                                            In Stock
                                         </>
                                     ) : (
                                         <>
