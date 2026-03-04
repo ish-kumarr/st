@@ -14,11 +14,13 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useCurrency } from '@/hooks/use-currency'
+import { toast } from 'sonner'
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null)
     const [recentOrders, setRecentOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [isGenerating, setIsGenerating] = useState(false)
     const { formatPrice } = useCurrency()
 
     useEffect(() => {
@@ -43,6 +45,29 @@ export default function AdminDashboard() {
 
         fetchDashboardData()
     }, [])
+
+    const handleDownloadReport = async () => {
+        try {
+            setIsGenerating(true)
+            const res = await fetch('/api/admin/report')
+            if (!res.ok) throw new Error('Failed to generate report')
+
+            const blob = await res.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `admin_report_${new Date().toISOString().split('T')[0]}.html`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+            toast.success('Report downloaded successfully')
+        } catch (error) {
+            toast.error('Failed to download report')
+        } finally {
+            setIsGenerating(false)
+        }
+    }
 
     if (loading) {
         return (
@@ -140,8 +165,13 @@ export default function AdminDashboard() {
                         <p className="text-xs text-white/60 font-light leading-relaxed">
                             {stats?.summaryText || "Calculating insights from the database..."}
                         </p>
-                        <button className="w-full py-4 bg-white text-black font-black uppercase tracking-widest text-[9px] hover:bg-primary hover:text-white transition-all">
-                            Download Report
+                        <button
+                            onClick={handleDownloadReport}
+                            disabled={isGenerating}
+                            className="w-full py-4 bg-white text-black font-black uppercase tracking-widest text-[9px] hover:bg-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+                            {isGenerating ? 'Generating...' : 'Download Report'}
                         </button>
                     </div>
 

@@ -38,9 +38,14 @@ export function Header() {
                 priority
               />
             </div>
-            <span className="text-xl font-black uppercase tracking-tighter text-foreground">
-              Satya<span className="text-stroke">Vij</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xl font-black uppercase tracking-tighter text-foreground leading-none">
+                Satya<span className="text-stroke">Vij</span>
+              </span>
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground mt-0.5">
+                Healthcare Pvt. Ltd.
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

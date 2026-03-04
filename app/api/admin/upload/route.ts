@@ -17,24 +17,32 @@ export async function POST(req: NextRequest) {
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        const base64Image = buffer.toString('base64');
 
-        // Define the upload directory
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'products');
+        const imgbbKey = process.env.IMGBB_API_KEY;
+        if (!imgbbKey) {
+            return NextResponse.json({ success: false, error: 'IMGBB_API_KEY is not configured.' }, { status: 500 });
+        }
 
-        // Ensure directory exists (mkdir -p)
-        await mkdir(uploadDir, { recursive: true });
+        const imgbbFormData = new URLSearchParams();
+        imgbbFormData.append('image', base64Image);
 
-        // Generate a unique filename
-        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-        const extension = path.extname(file.name) || '.jpg';
-        const filename = `${uniqueSuffix}${extension}`;
-        const filePath = path.join(uploadDir, filename);
+        const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+            method: 'POST',
+            body: imgbbFormData,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
 
-        // Write the file
-        await writeFile(filePath, buffer);
+        const imgbbData = await imgbbResponse.json();
 
-        // Return the public URL
-        const publicUrl = `/uploads/products/${filename}`;
+        if (!imgbbResponse.ok || !imgbbData.success) {
+            console.error('ImgBB upload error response:', imgbbData);
+            return NextResponse.json({ success: false, error: imgbbData.error?.message || 'Failed to upload image to ImgBB' }, { status: 500 });
+        }
+
+        const publicUrl = imgbbData.data.url;
 
         return NextResponse.json({ success: true, url: publicUrl });
 

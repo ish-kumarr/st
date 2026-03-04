@@ -302,6 +302,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </button>
                         <div className="h-8 w-px bg-foreground/[0.05]"></div>
                         <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => signOut()}
+                                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors border border-red-100 rounded-sm text-[10px] font-black uppercase tracking-widest"
+                            >
+                                <LogOut className="h-3 w-3" />
+                                Log Out
+                            </button>
                             <div className="text-right hidden sm:block">
                                 <p className="text-[10px] font-black uppercase tracking-widest leading-none">Admin</p>
                                 <p className="text-[9px] font-bold text-primary uppercase tracking-widest mt-1">Administrator</p>

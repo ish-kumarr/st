@@ -114,7 +114,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            &copy; 2024 Satyavij Medical Equipment. All rights reserved.
+            &copy; {new Date().getFullYear()} Satyavij Healthcare Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">
