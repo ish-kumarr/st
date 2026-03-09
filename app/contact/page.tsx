@@ -64,7 +64,7 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-2 text-foreground/40">Email</h3>
-                                    <p className="text-sm font-bold">info@satyavij.com</p>
+                                    <p className="text-sm font-bold">satyavij.care@gmail.com</p>
                                     <p className="text-[10px] uppercase font-black tracking-widest text-foreground/30 mt-1">Expected response: 24-48 hours</p>
                                 </div>
                             </div>

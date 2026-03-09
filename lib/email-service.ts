@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'satyavij.care@gmail.com',
-    pass: 'ptbj iwmy gala ipdp',
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
   },
 });
 
@@ -93,7 +93,7 @@ export const sendOTPEmail = async (email: string, otp: string, type: 'verificati
   const { subject, html } = templates[type](otp);
 
   await transporter.sendMail({
-    from: '"Satyavij Support" <satyavij.care@gmail.com>',
+    from: `"Satyavij Support" <${process.env.GMAIL_USER}>`,
     to: email,
     subject,
     html,
@@ -104,7 +104,7 @@ export const sendOrderUpdateEmail = async (email: string, orderId: string, statu
   const { subject, html } = templates.order_update(orderId, status, invoiceUrl);
 
   await transporter.sendMail({
-    from: '"Satyavij Support" <satyavij.care@gmail.com>',
+    from: `"Satyavij Support" <${process.env.GMAIL_USER}>`,
     to: email,
     subject,
     html,

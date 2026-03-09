@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Twitter, Linkedin, Mail, MapPin } from 'lucide-react'
+import { Mail, MapPin } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -27,17 +27,6 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               Satyavij Healthcare Pvt. Ltd. - Trusted supplier of premium medical equipment and healthcare solutions for institutions worldwide.
             </p>
-            <div className="flex gap-3 pt-2">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-            </div>
           </div>
 
           {/* Products */}
@@ -101,7 +90,7 @@ export function Footer() {
 
               <li className="flex gap-2 text-muted-foreground">
                 <Mail className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
-                <span>info@satyavij.com</span>
+                <span>satyavij.care@gmail.com</span>
               </li>
               <li className="flex gap-2 text-muted-foreground">
                 <MapPin className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />

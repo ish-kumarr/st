@@ -358,7 +358,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                             </p>
                                             <div className="flex items-center gap-4 p-6 border border-foreground/[0.05] bg-foreground/[0.01]">
                                                 <Mail className="h-5 w-5 opacity-40" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">info@satyavij.com</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">satyavij.care@gmail.com</span>
                                             </div>
                                         </div>
                                     </div>

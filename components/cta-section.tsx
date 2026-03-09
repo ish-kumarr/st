@@ -31,7 +31,7 @@ export function CTASection() {
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="rounded-lg bg-white/10 backdrop-blur p-6 space-y-2">
                 <h3 className="text-lg font-semibold">Quick Contact</h3>
-                <p className="text-white/80 text-sm">info@satyavij.com</p>
+                <p className="text-white/80 text-sm">satyavij.care@gmail.com</p>
               </div>
               <div className="rounded-lg bg-white/10 backdrop-blur p-6 space-y-2">
                 <h3 className="text-lg font-semibold">Business Hours</h3>
